@@ -76,10 +76,10 @@ nbactions.xml
 nb-configuration.xml
 
 ##############################
-## Visual Studio Code
+## Allure
 ##############################
-.vscode/
-.code-workspace
+.allure
+allure-results
 
 ##############################
 ## OS X

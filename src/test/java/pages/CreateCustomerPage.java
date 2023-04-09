@@ -1,23 +1,20 @@
 package pages;
 
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class CreateCustomerForm extends StartPage {
+public class CreateCustomerPage extends StartPage {
 
 	WebDriver driver;
 
-	public CreateCustomerForm(WebDriver driver) {
+	public CreateCustomerPage(WebDriver driver) {
 		super(driver);
 		this.driver = driver;
+		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager/addCust");
 		PageFactory.initElements(driver, this);
 	}
 
@@ -33,23 +30,26 @@ public class CreateCustomerForm extends StartPage {
 	@FindBy(css = "button.btn:nth-child(4)")
 	WebElement addCustomerAtTheBottom;
 
-	public void fillCustomerData(String firstName, String lastName, String postCode) {
+	private void fillCustomerData(String firstName, String lastName, String postCode) {
 		this.firstName.sendKeys(firstName);
 		this.lastName.sendKeys(lastName);
 		this.zipCode.sendKeys(postCode);
 	}
 
-	public String clickAddCustomerAtTheBottomAndGetAlertText() throws InterruptedException {
+	private String clickAddCustomerAtTheBottomAndGetAlertText() throws InterruptedException {
 		addCustomerAtTheBottom.click();
-		String s = null;
+		String alertMessage = null;
 		try {
 			Alert alert = driver.switchTo().alert();
-			s = alert.getText();
+			alertMessage = alert.getText();
 			alert.accept();
 		} catch (NoAlertPresentException e) {
-
+			System.out.println("добавление пустого пользователя");
 		}
-		return s;
+		return alertMessage;
 	}
-
+	public String addCustomer(String firstName, String lastName, String postCode) throws InterruptedException {
+		fillCustomerData(firstName, lastName, postCode);
+		return clickAddCustomerAtTheBottomAndGetAlertText();
+	}
 }

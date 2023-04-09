@@ -14,13 +14,13 @@ public class StartPage {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(css = "button.btn-lg:nth-child(1)")
+	@FindBy(css = "button[ng-class=\"btnClass1\"]")
 	WebElement addCustomer;
 
-	@FindBy(css = "button.btn:nth-child(2)")
+	@FindBy(css = "button[ng-class=\"btnClass2\"]")
 	WebElement openAccount;
 
-	@FindBy(css = "button.btn-lg:nth-child(3)")
+	@FindBy(css = "button[ng-class=\"btnClass3\"]")
 	WebElement customers;
 
 	public void clickToAddCustomer() {
@@ -34,5 +34,4 @@ public class StartPage {
 	public void clickToCustomers() {
 		customers.click();
 	}
-
 }

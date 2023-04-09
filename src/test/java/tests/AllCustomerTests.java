@@ -1,6 +1,8 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Comparator;
 import java.util.List;
@@ -9,154 +11,114 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestReporter;
 import org.junit.jupiter.api.parallel.ResourceLock;
-import org.openqa.selenium.By;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Description;
-import pages.CreateCustomerForm;
+import pages.CreateCustomerPage;
 import pages.CustomerList;
-import pages.CustomerList.Rows;
+import pages.Row;
 import pages.StartPage;
 
 class AllCustomerTests {
 
-	StartPage spage;
-	static CreateCustomerForm ccf;
-	static CustomerList cl;
+	static CreateCustomerPage newPage;
+	static CustomerList customerList;
 	static WebDriver driver;
+	static StartPage startPage;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		WebDriverManager.chromedriver().setup();
-		;
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(1)")).click();
-		ccf = new CreateCustomerForm(driver);
-		ccf.fillCustomerData("AaGg", "AaGg", "AaGg");
-		ccf.clickAddCustomerAtTheBottomAndGetAlertText();
-//		ccf.fillCustomerData("Abc", "Cdf", "E123");
-//		ccf.clickAddCustomerAtTheBottomAndGetAlertText();
-		ccf.fillCustomerData("Jack", "Daniels", "E946");
-		ccf.clickAddCustomerAtTheBottomAndGetAlertText();
+		newPage = new CreateCustomerPage(driver);
+		newPage.clickToAddCustomer();
+		newPage.addCustomer("AaGg", "AaGg", "AaGg");
+		newPage.addCustomer("Jack", "Daniels", "E946");
 	}
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
 		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(3)")).click();
-		cl = new CustomerList(driver);
-		List<Rows> list = null;
-		cl.findCustomer("AaGg");
-		list = cl.getRows();
-		list.get(0).getDeleteButton().click();
-		cl.clearSeachField();
-		cl.findCustomer("Daniels");
-		list = cl.getRows();
-		list.get(0).getDeleteButton().click();
-		cl.clearSeachField();
+		customerList = new CustomerList(driver);
+		customerList.clickToCustomers();
+		customerList.deleteCustomer("AaGg");
+		customerList.deleteCustomer("Daniels");
+		customerList.deleteCustomer("AaFf123!;");
 		driver.close();
 	}
-
+	
 	@Test
 	@Description("создание нового уникального пользователя")
-	@ResourceLock(value = "ccf")
+	@ResourceLock(value = "newForm")
 	@ResourceLock(value = "driver")
-	void createNewCustomer() throws InterruptedException {
-		System.out.println("start 1");
-		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(1)")).click();
-		ccf = new CreateCustomerForm(driver);
-		ccf.fillCustomerData("AaFf123!;", "AaFf123!;", "AaFf123!;");
-		String successResult = ccf.clickAddCustomerAtTheBottomAndGetAlertText();
+	void createNewCustomerTest() throws InterruptedException {
+		newPage = new CreateCustomerPage(driver);
+		String successResult = newPage.addCustomer("AaFf123!;", "AaFf123!;", "AaFf123!;");
 		assertTrue(successResult.contains("Customer added successfully with customer id"));
-		System.out.println("end 1");
 	}
 
-	@Test
-	@Description("создание дублирующего пользователя, добавленного перед выпольнением тестов")
-	@ResourceLock(value = "ccf")
-	@ResourceLock(value = "driver")
-	void createDuplicateCustomer() throws InterruptedException {
-		System.out.println("start 2");
-		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(1)")).click();
-		ccf.fillCustomerData("AaGg", "AaGg", "AaGg");
-		ccf.clickAddCustomerAtTheBottomAndGetAlertText();
-		String successResult = ccf.clickAddCustomerAtTheBottomAndGetAlertText();
-		assertEquals(successResult, "Please check the details. Customer may be duplicate.");
-		System.out.println("end 2");
-	}
-
-	@Test
+	@ParameterizedTest
+	@ValueSource(strings = {"AaGg"})
+	@EmptySource
 	@Description("создание пользователя с пустыми полями")
-	@ResourceLock(value = "ccf")
+	@ResourceLock(value = "newForm")
 	@ResourceLock(value = "driver")
-	void createEmptyUser() throws InterruptedException {
-		System.out.println("start 3");
-		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(1)")).click();
-		ccf = new CreateCustomerForm(driver);
-		ccf.fillCustomerData("", "", "");
-		String result = ccf.clickAddCustomerAtTheBottomAndGetAlertText();
-		assertNull(result);
-		System.out.println("end 3");
+	void createEmptyUserTest(String value) throws InterruptedException {
+		newPage = new CreateCustomerPage(driver);
+		String result = newPage.addCustomer(value, value, value);
+		if(value != "") assertEquals(result, "Please check the details. Customer may be duplicate.");
+		else assertNull(result);
 	}
 
 	@Test
 	@Description("сортировка списка пользователей")
-	@ResourceLock(value = "ccf")
-	@ResourceLock(value = "cl")
+	@ResourceLock(value = "newForm")
 	@ResourceLock(value = "driver")
-	void sortCustomersByFirstName() throws InterruptedException {
-		System.out.println("start 4");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(1)")).click();
-		ccf = new CreateCustomerForm(driver);
-		ccf.clickToCustomers();
-		cl = new CustomerList(driver);
-		List<Rows> list = cl.getRows();
-		list = list.stream().sorted(Comparator.comparing(Rows::getFirstName)).collect(Collectors.toList());
-		cl.sortByFirstName();
-		cl.sortByFirstName();
-		List<Rows> list1 = cl.getRows();
+	void sortCustomersByFirstNameTest() throws InterruptedException {
+		customerList = new CustomerList(driver);
+		customerList.clickToCustomers();
+		List<Row> list = customerList.getRows();
+		list = list.stream().sorted(Comparator.comparing(Row::getFirstName).reversed()).collect(Collectors.toList());
+		customerList.sortByFirstName();
+		List<Row> list1 = customerList.getRows();
 		assertTrue(list.equals(list1));
-		System.out.println("end 4");
 	}
 
-	@Test
+	@ParameterizedTest(name = "{index}")
+	@ValueSource(strings = {"AaGg", "Daniels", "E946"})
 	@Description("поиск пользователя по всем трем его параметрам")
-	@ResourceLock(value = "cl")
+	@ResourceLock(value = "customerList")
 	@ResourceLock(value = "driver")
-	void findCustomer() throws InterruptedException {
-		System.out.println("start 5");
-		List<CustomerList.Rows> list = null;
-		driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-		driver.findElement(By.cssSelector("button.btn-lg:nth-child(3)")).click();
-		cl = new CustomerList(driver);
-		cl.findCustomer("AaGg");
-		list = cl.getRows();
-		assertEquals(list.get(0).getFirstName(), "AaGg");
-		cl.clearSeachField();
-		cl.findCustomer("Daniels");
-		list = cl.getRows();
-		list.get(0).getDeleteButton().click();
-		assertEquals(list.get(0).getLastName(), "Daniels");
-		cl.clearSeachField();
-		cl.findCustomer("E946");
-		list = cl.getRows();
-		assertEquals(list.get(0).getZipCode(), "E946");
-		System.out.println("end 5");
+	void findCustomerTest(String input, TestInfo info) throws InterruptedException {
+		String count = info.getDisplayName();
+		String parameter = null;
+		List<Row> table = null;
+		customerList = new CustomerList(driver);
+		customerList.clickToCustomers();
+		customerList.clearSeachField();
+		customerList.findCustomer(input);
+		table = customerList.getRows();
+		switch (count) {
+		case "1":
+			parameter = table.get(0).getFirstName();
+			break;
+		case "2":
+			parameter = table.get(0).getLastName();
+			break;
+		case "3":
+			parameter = table.get(0).getZipCode();
+		}
+		assertEquals(parameter, input);
 	}
 }

@@ -26,40 +26,58 @@
 		</dependency>
 		<!--Selenium Dependency-->
 		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
+			<groupId>
+				org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>${selenium.version}</version>
+			<version>
+				${selenium.version}</version>
 		</dependency>
 		<!--JUNIT 5 Dependencies-->
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
+			<groupId>
+				org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>${junit.jupiter.version}</version>
+			<version>
+				${junit.jupiter.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
+			<groupId>
+				org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${junit.jupiter.version}</version>
+			<version>
+				${junit.jupiter.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.platform</groupId>
+			<groupId>
+				org.junit.platform</groupId>
 			<artifactId>junit-platform-engine</artifactId>
-			<version>${junit.platform.version}</version>
+			<version>
+				${junit.platform.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.platform</groupId>
+			<groupId>
+				org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			<version>${junit.platform.version}</version>
+			<version>
+				${junit.platform.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
 			<version>${junit.platform.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!--Allure Reporting Dependencies-->
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-junit5</artifactId>
+			<artifactId>
+				allure-junit5</artifactId>
 			<version>${allure-junit5.version}</version>
 		</dependency>
 	</dependencies>
@@ -67,70 +85,90 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+				<groupId>
+					org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
+				<version>
+					${maven-surefire-plugin.version}</version>
 				<configuration>
 					<properties>
 						<property>
 							<name>listener</name>
-							<value>io.qameta.allure.junit5.AllureJunit5</value>
+							<value>
+								io.qameta.allure.junit5.AllureJunit5</value>
 						</property>
 						<configurationParameters>
-							junit.jupiter.execution.parallel.enabled = true
-							junit.jupiter.execution.parallel.mode.default = concurrent
+							junit.jupiter.execution.parallel.enabled=true
+							junit.jupiter.execution.parallel.mode.default=concurrent
 							junit.jupiter.execution.parallel.config.strategy=dynamic
 							junit.jupiter.execution.parallel.config.dynamic.factor=1
 						</configurationParameters>
 					</properties>
 					<includes>
-						<include>**/tests/**.java</include>
+						<include>
+							**/tests/**.java</include>
 					</includes>
 					<argLine>
 						-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
 					</argLine>
 					<systemProperties>
 						<property>
-							<name>allure.results.directory</name>
-							<value>${project.basedir}/target/allure-results</value>
+							<name>
+								allure.results.directory</name>
+							<value>
+								${project.basedir}/target/allure-results</value>
 						</property>
 						<property>
-							<name>junit.jupiter.extensions.autodetection.enabled</name>
-							<value>true</value>
+							<name>
+								junit.jupiter.extensions.autodetection.enabled</name>
+							<value>
+								true</value>
 						</property>
 					</systemProperties>
-					<reportFormat>plain</reportFormat>
+					<reportFormat>
+						plain</reportFormat>
 				</configuration>
 				<dependencies>
 					<dependency>
-						<groupId>org.aspectj</groupId>
+						<groupId>
+							org.aspectj</groupId>
 						<artifactId>aspectjweaver</artifactId>
-						<version>${aspectj.version}</version>
+						<version>
+							${aspectj.version}</version>
 					</dependency>
 					<dependency>
-						<groupId>org.junit.jupiter</groupId>
+						<groupId>
+							org.junit.jupiter</groupId>
 						<artifactId>junit-jupiter-api</artifactId>
-						<version>${junit.jupiter.version}</version>
+						<version>
+							${junit.jupiter.version}</version>
 					</dependency>
 					<dependency>
-						<groupId>org.junit.jupiter</groupId>
+						<groupId>
+							org.junit.jupiter</groupId>
 						<artifactId>junit-jupiter-engine</artifactId>
-						<version>${junit.jupiter.version}</version>
+						<version>
+							${junit.jupiter.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
-				<groupId>io.qameta.allure</groupId>
+				<groupId>
+					io.qameta.allure</groupId>
 				<artifactId>allure-maven</artifactId>
-				<version>${allure-maven.version}</version>
+				<version>
+					${allure-maven.version}</version>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+				<groupId>
+					org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
+				<version>
+					${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<target>
+						${java.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
