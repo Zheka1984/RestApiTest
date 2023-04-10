@@ -1,9 +1,9 @@
-package PokemonObjects;
+package dataObjects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BaseObject {
+public class MainData {
 
 	private String name;
 	
