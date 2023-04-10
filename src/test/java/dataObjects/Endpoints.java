@@ -10,12 +10,15 @@ public class Endpoints {
 	public String getBaseUrl() {
 		return baseUrl;
 	}
+	
 	public String getPrefixForRattata() {
 		return prefixForRattata;
 	}
+	
 	public String getPrefixForPidgeotto() {
 		return prefixForPidgeotto;
 	}
+	
 	public String getAllPokemons() {
 		return allPokemons;
 	}

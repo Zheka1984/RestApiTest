@@ -58,4 +58,5 @@ public class SupportClass {
                 .assertThat().statusCode(200)
                 .extract().response();
 	}
+	
 }
